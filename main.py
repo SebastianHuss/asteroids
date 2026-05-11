@@ -26,7 +26,7 @@ def main():
             
         screen.fill("black") # fill screen black
         player.draw(screen)
-
+        player.update(dt)
 
         pygame.display.flip() # refresh screen
         # Game-Loop Ende
