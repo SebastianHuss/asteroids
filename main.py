@@ -2,6 +2,8 @@ import pygame
 from logger import log_state
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -15,8 +17,16 @@ def main():
     clock = pygame.time.Clock() # clock-Objekt erzeugen 
     dt = 0 # Delta-Time festlegen
 
+    updatable = pygame.sprite.Group() # Objekte die geupdated werden können
+    drawable = pygame.sprite.Group() # Objekte die gezeichnet werden
+    asteroids = pygame.sprite.Group() # Gruppe für Asteroiden
+    Player.containers = (updatable, drawable) # Player-Klasse den Gruppen hinzufügen
+    Asteroid.containers = (asteroids, updatable, drawable) ## Asteroid-Klasse den Gruppen hinzufügen
+    AsteroidField.containers = (updatable)
+
     # Player-Object
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    AsteroidField()
 
     while True:
         log_state()
@@ -25,8 +35,10 @@ def main():
                 return
             
         screen.fill("black") # fill screen black
-        player.draw(screen)
-        player.update(dt)
+        updatable.update(dt) # Updated alle Objekte in updatable-Gruppe
+        for sprite in drawable:
+            # zeichnet alle Objekte in drawable-Gruppe
+            sprite.draw(screen)
 
         pygame.display.flip() # refresh screen
         # Game-Loop Ende
